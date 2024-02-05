@@ -14,12 +14,23 @@ spec:
       labels:
         app: vprodb
     spec:
+      # affinity:
+      #   nodeAffinity:
+      #     requiredDuringSchedulingIgnoredDuringExecution:
+      #       nodeSelectorTerms:
+      #         - matchExpressions:
+      #           - key: zone
+      #             operator: In
+      #             values:
+      #             - ap-south-1a
       containers:
         - name: vprodb
+          # args:
+          #   - "--ignore-db-dir=lost+found"
           image: narsss1234/vprodb:latest
-          volumeMounts:
-            - mountPath: /var/lib/mysql
-              name: vpro-db-data
+          # volumeMounts:
+          #   - mountPath: /var/lib/mysql
+          #     name: vpro-db-data
           ports:
             - containerPort: 3306
           env:
@@ -28,17 +39,15 @@ spec:
                 secretKeyRef:
                   key: db-pass
                   name: app-secret
-      nodeSelector:
-        zone: ap-south-1a
-      volumes:
-        - name: vpro-db-data
-          awsElasticBlockStore: 
-            volumeID: "vol-04800397dbe1a5b20"
-            fsType: ext4
-      initContainers:
-        - name: busybox
-          image: busybox:latest
-          args: ["rm","-rf","/var/lib/mysql/lost+found"]
-          volumeMounts:
-            - mountPath: /var/lib/mysql
-              name: vpro-db-data
+      # volumes:
+      #   - name: vpro-db-data
+      #     awsElasticBlockStore: 
+      #       volumeID: "vol-04800397dbe1a5b20"
+      #       fsType: ext4
+      # initContainers:
+      #   - name: busybox
+      #     image: busybox:latest
+      #     args: ["rm","-rf","/var/lib/mysql/lost+found"]
+      #     volumeMounts:
+      #       - mountPath: /var/lib/mysql
+      #         name: vpro-db-data
